@@ -157,7 +157,7 @@ A formal benchmark dataset and automated retrieval/answer-quality evaluation are
 
 ## 🌐 Live Demo
 
-Live deployment link will be added here.
+🚀 [Try the AI Document Assistant](https://bibirhussainy-ai-document-assistant-app-n7gjz6.streamlit.app/)
 
 ## 🎥 Demo Video
 
