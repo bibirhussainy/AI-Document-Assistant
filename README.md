@@ -1,85 +1,95 @@
 # 📄 AI Document Assistant
 
-An AI-powered document question-answering application built using **Retrieval-Augmented Generation (RAG)**.
+A deployed **Retrieval-Augmented Generation (RAG)** application that allows users to upload PDF documents and ask questions about their content.
 
-Users can upload a PDF, ask questions in natural language, and receive answers grounded in the document with relevant page references and retrieved source passages.
+The system retrieves semantically relevant passages from the document and uses them as context for an OpenAI language model to generate grounded answers with page-level source references.
 
-## 🚀 Features
+🚀 **Live Demo:** [Try the AI Document Assistant](https://bibirhussainy-ai-document-assistant-app-n7gjz6.streamlit.app/)
+
+---
+
+## ✨ Key Features
 
 - Upload and process PDF documents
-- Extract text while preserving page numbers
-- Split documents into overlapping text chunks
-- Generate semantic embeddings for document sections
-- Retrieve the most relevant passages using cosine similarity
-- Generate grounded answers using an OpenAI language model
-- Display relevant source page numbers
-- Show retrieved source passages for transparency
-- Avoid unsupported answers when information is not found in the document
-- Simple interactive interface built with Streamlit
+- Preserve page numbers during text extraction
+- Split documents into overlapping, page-aware chunks
+- Generate semantic embeddings using Sentence Transformers
+- Retrieve relevant passages using cosine similarity
+- Generate answers grounded in retrieved document context
+- Display source page references with each answer
+- Allow users to inspect the retrieved source passages
+- Handle questions where information is not available in the document
+- Interactive web interface built with Streamlit
 
-## 🧠 How It Works
+---
 
-The application uses a Retrieval-Augmented Generation pipeline:
+## 🧠 RAG Architecture
+
+The application follows a simple Retrieval-Augmented Generation pipeline:
 
 ```text
 PDF Upload
-    ↓
+     ↓
 Text Extraction
-    ↓
+     ↓
 Page-Aware Chunking
-    ↓
+     ↓
 Sentence Embeddings
-    ↓
+     ↓
 Semantic Similarity Search
-    ↓
+     ↓
 Top Relevant Chunks
-    ↓
-LLM Generation
-    ↓
-Answer + Source Pages
+     ↓
+OpenAI Language Model
+     ↓
+Grounded Answer + Source Pages
 ```
 
-Instead of sending the entire PDF to the language model, the application retrieves the most relevant sections first and provides those sections as context for the final answer.
+Rather than sending the entire PDF to the language model, the application first searches for the sections most relevant to the user's question.
+
+Only those retrieved passages are provided to the language model as context. This reduces unnecessary context and helps keep answers grounded in the uploaded document.
+
+---
 
 ## 🛠️ Tech Stack
 
-- **Python**
-- **Streamlit** — web interface
-- **PyPDF** — PDF text extraction
-- **Sentence Transformers** — semantic embeddings
-- **all-MiniLM-L6-v2** — embedding model
-- **Cosine Similarity** — document retrieval
-- **OpenAI API** — grounded answer generation
+| Technology | Purpose |
+|---|---|
+| Python | Core application logic |
+| Streamlit | Interactive web interface and deployment |
+| PyPDF | PDF text extraction |
+| Sentence Transformers | Semantic embedding generation |
+| all-MiniLM-L6-v2 | Embedding model |
+| Cosine Similarity | Semantic retrieval |
+| OpenAI API | Grounded answer generation |
 
-## 🔎 Example
+---
+
+## 🔍 Example
 
 **Question**
 
 > What support do I get for interviews?
 
-**Example answer**
+**Answer**
 
 > Interview support varies by package. The document includes interview preparation and mock interview support. The International Career package includes one mock interview, while International Career Premium includes up to three mock interviews.
 
-**Retrieved sources:** Pages 2, 3 and 4.
+**Retrieved sources:** Pages 2, 3, and 4.
 
-The application also allows users to expand the retrieved source passages and inspect the document text used to generate the answer.
+Users can also expand the retrieved passages to inspect the exact document sections supplied to the language model.
 
-## 🛡️ Grounded Answers
+---
 
-The assistant is instructed to answer using only the retrieved document context.
+## 🛡️ Grounded Question Answering
 
-If the requested information cannot be found, it responds that the information was not found instead of intentionally filling the gap with outside information.
+The language model is instructed to answer using only the retrieved document context.
 
-For example:
+If the requested information cannot be found in that context, the assistant indicates that the information could not be found rather than intentionally supplementing the answer with outside information.
 
-**Question**
+This makes the retrieval process visible to the user through both page references and the underlying retrieved passages.
 
-> What is the CEO's home address?
-
-**Response**
-
-> I couldn't find the CEO's home address in the document.
+---
 
 ## 📂 Project Structure
 
@@ -90,75 +100,107 @@ AI-Document-Assistant/
 ├── README.md
 ├── .gitignore
 └── .streamlit/
-    └── secrets.toml   # Local secret — excluded from Git
+    └── secrets.toml   # Local only — excluded from Git
 ```
+
+---
 
 ## ⚙️ Run Locally
 
-1. Clone the repository.
+### 1. Clone the repository
 
-2. Install the required packages:
+```bash
+git clone https://github.com/bibirhussainy/AI-Document-Assistant.git
+cd AI-Document-Assistant
+```
+
+### 2. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Create:
+### 3. Configure the OpenAI API key
+
+Create:
 
 ```text
 .streamlit/secrets.toml
 ```
 
-4. Add your OpenAI API key:
+Add:
 
 ```toml
 OPENAI_API_KEY = "your-api-key"
 ```
 
-5. Start the application:
+### 4. Run the application
 
 ```bash
 streamlit run app.py
 ```
 
+---
+
 ## 🔐 Security
 
-API credentials are stored using Streamlit secrets and are excluded from version control through `.gitignore`.
+API credentials are managed through Streamlit Secrets and are not hard-coded into the application.
 
-API keys are never hard-coded into the application source code.
+The local `secrets.toml` file is excluded from version control through `.gitignore`.
 
-## 📊 Current Evaluation
+---
 
-The application has been manually tested on multi-page PDF documents for:
+## 📊 Evaluation
 
-- Relevant information retrieval
+The current version has been manually tested on multi-page PDF documents for:
+
+- Semantic information retrieval
 - Page-aware source attribution
 - Grounded question answering
-- Questions whose answers are absent from the document
+- Questions with information absent from the document
+- Retrieval across different document sections
 
-A formal benchmark dataset and automated retrieval/answer-quality evaluation are not yet included.
+A formal benchmark dataset and automated RAG evaluation pipeline are not yet included.
 
-## ⚠️ Limitations
+---
+
+## ⚠️ Current Limitations
 
 - Designed primarily for text-based PDFs
-- Scanned/image-only PDFs require OCR support
-- Retrieval currently uses the top three semantically similar chunks
-- Performance can vary depending on document structure and extraction quality
-- Current version processes one PDF at a time
+- Scanned or image-only PDFs require OCR
+- Retrieves the top three semantically similar chunks
+- Retrieval quality depends on document structure and extracted text quality
+- Processes one PDF at a time
+- Broad document-summary questions may require more context than the current top-three retrieval strategy provides
+
+---
 
 ## 🔮 Future Improvements
 
-- Support multiple documents
-- Add OCR for scanned PDFs
-- Add persistent vector storage for larger document collections
-- Add automated RAG evaluation metrics
-- Add configurable retrieval settings
-- Improve document caching and performance
+- Multi-document support
+- OCR support for scanned PDFs
+- Persistent vector storage for larger document collections
+- Automated retrieval and answer-quality evaluation
+- Configurable retrieval parameters
+- Improved caching and document processing performance
+- Improved retrieval strategy for document-wide questions
 
-## 🌐 Live Demo
+---
 
-🚀 [Try the AI Document Assistant](https://bibirhussainy-ai-document-assistant-app-n7gjz6.streamlit.app/)
+## 🌐 Live Application
+
+🚀 **[Launch the AI Document Assistant](https://bibirhussainy-ai-document-assistant-app-n7gjz6.streamlit.app/)**
+
+---
 
 ## 🎥 Demo Video
 
-30-second demonstration video will be added here.
+A short demonstration video will be added here.
+
+---
+
+## 👩‍💻 Author
+
+**Bibi Ruqaya Hussainy**
+
+Built as a practical AI engineering portfolio project demonstrating document processing, semantic search, retrieval-augmented generation, API integration, and deployment.
