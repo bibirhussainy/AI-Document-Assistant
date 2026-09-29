@@ -195,7 +195,7 @@ A formal benchmark dataset and automated RAG evaluation pipeline are not yet inc
 
 ## 🎥 Demo Video
 
-A short demonstration video will be added here.
+▶️ [Watch the 30-second AI Document Assistant demo](./AI-Document-Assistant-Demo.mov)
 
 ---
 
